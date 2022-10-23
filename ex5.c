@@ -22,8 +22,6 @@ int main(void)
     char secondCpfArray[12];
     char thirdCpfArray[13];
     int auxCounter = 0;
-    int amountOfDots = 0;
-    int amountOfMinusSignal = 0;
 
     scanf(" %s", cpf);
 
