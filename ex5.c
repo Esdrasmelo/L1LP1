@@ -14,34 +14,72 @@ int getSumValueOfTenDigits(char cpf[12]);
 
 int calculateSecondVerifyingDigitValue(int sumedValue);
 
-int areDigitsEquals(int calculedFirstDigit, int calculedSecondDigit, int firstDigit, int secondDigit);
+int areVerifyingDigitsEquals(int calculedFirstDigit, int calculedSecondDigit, int firstDigit, int secondDigit);
 
 int main(void)
 {
-    char cpf[12];
+    char cpf[15];
+    char secondCpfArray[12];
+    char thirdCpfArray[13];
+    int auxCounter = 0;
+    int amountOfDots = 0;
+    int amountOfMinusSignal = 0;
 
-    scanf(" %c%c%c.%c%c%c.%c%c%c-%c%c", &cpf[0], &cpf[1], &cpf[2], &cpf[3], &cpf[4], &cpf[5], &cpf[6], &cpf[7], &cpf[8], &cpf[9], &cpf[10]);
+    scanf(" %s", cpf);
 
-    while (!shouldStop(cpf))
+    for (int index = 0; index < 15; index++)
     {
-        if (areAllNumbersEqual(cpf))
+        if (cpf[index] != '.' && cpf[index] != '-')
+        {
+            secondCpfArray[auxCounter] = cpf[index];
+            auxCounter++;
+        }
+    }
+
+    if (strlen(secondCpfArray) < 11)
+    {
+        int neededZeros = 11 - strlen(secondCpfArray);
+
+        for (int index = 0; index < neededZeros; index++)
+            thirdCpfArray[index] = '0';
+        for (int index = neededZeros; index < strlen(secondCpfArray) + neededZeros; index++)
+        {
+            thirdCpfArray[index] = secondCpfArray[index - neededZeros];
+        }
+    }
+
+    while (!shouldStop(secondCpfArray))
+    {
+        int areNumbersEquals = strlen(secondCpfArray) < 11 ? areAllNumbersEqual(thirdCpfArray) : areAllNumbersEqual(secondCpfArray);
+        if (areNumbersEquals)
             printf("inválido\n");
         else
         {
-            int nineDigitsSumed = getSumValueOfNineDigits(cpf);
-            int tenDigitsSumed = getSumValueOfTenDigits(cpf);
+            int nineDigitsSumed = strlen(secondCpfArray) < 11 ? getSumValueOfNineDigits(thirdCpfArray) : getSumValueOfNineDigits(secondCpfArray);
+            int tenDigitsSumed = strlen(secondCpfArray) < 11 ? getSumValueOfTenDigits(thirdCpfArray) : getSumValueOfTenDigits(secondCpfArray);
             int calculatedFirstDigit = calculateFirstVerifyingDigitValue(nineDigitsSumed);
             int calculatedSecondDigit = calculateSecondVerifyingDigitValue(tenDigitsSumed);
-            int firstDigit = cpf[strlen(cpf) - 2] - '0';
-            int secondDigit = cpf[strlen(cpf) - 1] - '0';
-            int areAllDigitsEquals = areDigitsEquals(calculatedFirstDigit, calculatedSecondDigit, firstDigit, secondDigit);
+            int firstDigit = strlen(secondCpfArray) < 11 ? thirdCpfArray[strlen(thirdCpfArray) - 2] - '0' : secondCpfArray[strlen(secondCpfArray) - 2] - '0';
+            int secondDigit = strlen(secondCpfArray) < 11 ? thirdCpfArray[strlen(thirdCpfArray) - 1] - '0' : secondCpfArray[strlen(secondCpfArray) - 1] - '0';
+            int areAllDigitsEquals = areVerifyingDigitsEquals(calculatedFirstDigit, calculatedSecondDigit, firstDigit, secondDigit);
 
             if (areAllDigitsEquals)
                 printf("válido\n");
             else
                 printf("inválido - esperado: %d%d, encontrado: %d%d\n", calculatedFirstDigit, calculatedSecondDigit, firstDigit, secondDigit);
         }
-        scanf(" %c%c%c.%c%c%c.%c%c%c-%c%c", &cpf[0], &cpf[1], &cpf[2], &cpf[3], &cpf[4], &cpf[5], &cpf[6], &cpf[7], &cpf[8], &cpf[9], &cpf[10]);
+        
+        scanf(" %s", cpf);
+
+        auxCounter = 0;
+        for (int index = 0; index < 15; index++)
+        {
+            if (cpf[index] != '.' && cpf[index] != '-')
+            {
+                secondCpfArray[auxCounter] = cpf[index];
+                auxCounter++;
+            }
+        }
     }
 }
 
@@ -51,11 +89,13 @@ int shouldStop(char cpf[12])
     for (int index = 0; index < strlen(cpf) && cpf[index] != '\0'; index++)
     {
         if (cpf[index] == '0')
+        {
             quantityOfZeros += 1;
+        }
     }
-    if (quantityOfZeros != strlen(cpf))
-        return 0;
-    return 1;
+    if (quantityOfZeros == 11)
+        return 1;
+    return 0;
 }
 
 int areAllNumbersEqual(char cpf[12])
@@ -63,8 +103,7 @@ int areAllNumbersEqual(char cpf[12])
     int quantityEqualsNumbers = 0;
     for (int index = 0; index < strlen(cpf) && cpf[index] != '\0'; index++)
     {
-        int isSpecialChar = cpf[index] == '.' || cpf[index] == '-';
-        if (!isSpecialChar && cpf[index] == cpf[index + 1])
+        if (cpf[index] == cpf[index + 1])
             quantityEqualsNumbers += 1;
     }
     if (quantityEqualsNumbers == strlen(cpf) - 1)
@@ -115,7 +154,7 @@ int calculateSecondVerifyingDigitValue(int sumedValue)
     return (int)rest;
 }
 
-int areDigitsEquals(int calculedFirstDigit, int calculedSecondDigit, int firstDigit, int secondDigit)
+int areVerifyingDigitsEquals(int calculedFirstDigit, int calculedSecondDigit, int firstDigit, int secondDigit)
 {
     int areFirstDigitsEquals = calculedFirstDigit == firstDigit;
     int areSecondDigitsEquals = calculedSecondDigit == secondDigit;
