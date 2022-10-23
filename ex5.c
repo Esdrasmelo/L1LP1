@@ -39,10 +39,9 @@ int main(void)
             if (areAllDigitsEquals)
                 printf("válido\n");
             else
-                printf("inválido - esperado: %d%d, encontrado: %d%d\n", firstDigit, secondDigit, calculatedFirstDigit, calculatedSecondDigit);
-
-            scanf(" %c%c%c.%c%c%c.%c%c%c-%c%c", &cpf[0], &cpf[1], &cpf[2], &cpf[3], &cpf[4], &cpf[5], &cpf[6], &cpf[7], &cpf[8], &cpf[9], &cpf[10]);
+                printf("inválido - esperado: %d%d, encontrado: %d%d\n", calculatedFirstDigit, calculatedSecondDigit, firstDigit, secondDigit);
         }
+        scanf(" %c%c%c.%c%c%c.%c%c%c-%c%c", &cpf[0], &cpf[1], &cpf[2], &cpf[3], &cpf[4], &cpf[5], &cpf[6], &cpf[7], &cpf[8], &cpf[9], &cpf[10]);
     }
 }
 
